@@ -1,22 +1,18 @@
 
 from functools import wraps
 
-def to_string(func):
+
+
+def to_upper(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        args = [ f'{v}' for v in args]
+        wrapper.__original = func
+
+        args = [ f'{v}'.upper() for v in args]
         return func(*args, **kwargs)
     return wrapper
 
-def add_brackets(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        args = [ f'[{v}]' for v in args]
-        return func(*args, **kwargs)
-    return wrapper
-
-@add_brackets
-@to_string
+@to_upper
 def concat(*args, **kwargs):
     '''concatenate args with separator sep'''
     sep = kwargs.get('sep', ';')
@@ -29,9 +25,13 @@ if __name__ == '__main__':
 
     print(concat(*users))
     print(concat(*users, sep=' | '))
+    
+    
+    print(concat.__original(*users, sep=' | '))
 
-    values = [31,2,4,22,46]
+    concat = concat.__original
+    print(concat(*users))
 
-    print(concat(*values, sep=','))
+
 
     print('---')

@@ -8,14 +8,16 @@ def to_string(func):
         return func(*args, **kwargs)
     return wrapper
 
-def add_brackets(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        args = [ f'[{v}]' for v in args]
-        return func(*args, **kwargs)
-    return wrapper
+def add_brackets(left='[', right=']'):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            args = [ f'{left}{v}{right}' for v in args]
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
-@add_brackets
+@add_brackets(left='<', right='>')
 @to_string
 def concat(*args, **kwargs):
     '''concatenate args with separator sep'''
